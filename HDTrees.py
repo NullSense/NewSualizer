@@ -1,7 +1,7 @@
+from ete3 import Tree
 
+file = "Trees/ancestor.tre"
 
+t = Tree(file)
 
-def main():
-    print("test")
-
-main()
+print(t)
