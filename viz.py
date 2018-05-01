@@ -32,7 +32,7 @@ def computeNode(node,xx,yy, ss, depth,ang):
 	x.append(xx)
 	y.append(yy)
 	s.append(ss)
-	print(ss)
+
 	colors.append("#{:02x}{:02x}{:02x}".format(int(depth*50),int(depth*50),150))
 
 	m=len(node.children)
