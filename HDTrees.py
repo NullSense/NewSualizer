@@ -1,5 +1,6 @@
 from ete3 import Tree
 import sys
+import viz
 
 
 # scan file and output as string
@@ -28,7 +29,7 @@ def parse_file(file):
 
     tree_string = scan_file(file)
     tree_string = remove_leading(tree_string)
-
+ 	
     # temporary workaround, cause Tree() thinks string is path
     write_to_file(tree_string, file)
     tree = Tree(file, format=1)
@@ -38,7 +39,9 @@ def parse_file(file):
 def main():
     print(sys.argv)  # Prints all arguments passed in cmd
     # to run: python HDTrees.py Trees/filename.tre
-    print(parse_file(sys.argv[1]))  # 2nd arg (file with dir)
+    tree_output=parse_file(sys.argv[1])
+    print(tree_output)  # 2nd arg (file with dir)
+    viz.main(tree_output)
 
 
 main()
