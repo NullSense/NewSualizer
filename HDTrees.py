@@ -40,7 +40,7 @@ def main():
     print(sys.argv)  # Prints all arguments passed in cmd
     # to run: python HDTrees.py Trees/filename.tre
     tree_output=parse_file(sys.argv[1])
-    print(tree_output)  # 2nd arg (file with dir)
+    #print(tree_output)  # 2nd arg (file with dir)
     viz.main(tree_output)
 
 
