@@ -1,29 +1,31 @@
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import *
 from bokeh.layouts import gridplot
-from ete3 import Tree
 import math
 
-#These store the layout of the first visualisation
-x = []
-y = []
-s = []  #size of circles
-colors = []
+# These store the layout of the first visualisation
+x1 = []
+y1 = []
+s1 = []  # size of circles
+colors1 = []
 
-#These store the layout of the second visualisation
+# These store the layout of the second visualisation
 x2 = []
 y2 = []
-s2 = []  #size of circles
+s2 = []  # size of circles
 colors2 = []
 
 
 def main(tree):
-    #Compute the layout of both visualisations
+    # Compute the layout of both visualisations
     computeNode1(tree, 0.0, 0.0, 50.0, 1, 0.0)
     computeNode2(tree, 0.0, 0.0, 80.0, 1)
 
     # output to static HTML file
     output_file("line.html")
+
+    source = ColumnDataSource(
+        data=dict(x1=x1, y1=y1, s1=s1, x2=x2, y2=y2, s2=s2, colors1=colors1))
 
     # tools for each fig
     tools = [
@@ -33,37 +35,52 @@ def main(tree):
         LassoSelectTool(),
         BoxSelectTool(),
         ResetTool(),
-        PanTool()
+        PanTool(),
+        TapTool(),
+        HoverTool(tooltips=[("index", "$index"), ("radius", "@s2")])
     ]
 
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=400,
-            plot_height=400,
+            plot_width=800,
+            plot_height=800,
             x_range=(-100, 100),
             y_range=(-100, 100),
             tools=tools) for i in range(2)
     ]
 
     # add circles to visualizations
-    fig_list[0].circle(x, y, radius=s, color=colors, alpha=1)
-    fig_list[1].circle(x2, y2, radius=s2, color="red", alpha=0.1)
+    fig_list[0].circle(
+        'x1',
+        'y1',
+        radius='s1',
+        fill_color='colors1',
+        line_color='colors1',
+        alpha=1,
+        source=source)
+
+    fig_list[1].circle(
+        'x2',
+        'y2',
+        radius='s2',
+        fill_color='red',
+        line_color='red',
+        alpha=0.1,
+        source=source)
 
     show(gridplot([fig_list]))
 
 
 # Computes the layout of the first visualisation
 def computeNode1(node, xx, yy, size, depth, ang):
-    global x, y, s, colors
-
     t = 2 * math.pi if depth == 1 else math.pi / 1.3
 
-    x.append(xx)
-    y.append(yy)
-    s.append(size)
+    x1.append(xx)
+    y1.append(yy)
+    s1.append(size)
 
-    colors.append("#{:02x}{:02x}{:02x}".format(
+    colors1.append("#{:02x}{:02x}{:02x}".format(
         int(depth * 50), int(depth * 50), 150))
 
     m = len(node.children)
@@ -80,8 +97,6 @@ def computeNode1(node, xx, yy, size, depth, ang):
 
 # Computes the layout of second visualisation
 def computeNode2(node, xx, yy, size, depth):
-    global x2, y2, s2, colors2
-
     x2.append(xx)
     y2.append(yy)
     s2.append(size)
