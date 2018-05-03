@@ -3,40 +3,44 @@ from bokeh.layouts import gridplot
 from ete3 import Tree
 import math
 
+#These store the layout of the first visualisation
 x = []
 y = []
-s = []
+s = []      #size of circles
 colors = []
+
+#These store the layout of the second visualisation
 x2 = []
 y2 = []
-s2 = []
+s2 = []     #size of circles
 colors2 = []
 
 
 def main(tree):
-    global x, y, s
+    #Compute the layout of both visualisations
     computeNode1(tree, 0.0, 0.0, 50.0, 1, 0.0)
     computeNode2(tree, 0.0, 0.0, 80.0, 1)
+
     # output to static HTML file
     output_file("line.html")
 
+    #left figure for the first visualization
     left = figure(plot_width=400, plot_height=400,
                x_range=(-100, 100), y_range=(-100, 100))
-
-    # add a circle renderer with a size, color, and alpha
+    #add circles for first visualization
     left.circle(x, y, radius=s, color=colors, alpha=1)
 
+    #right figure for second visualisation
     right = figure(plot_width=400, plot_height=400,
                x_range=(-100, 100), y_range=(-100, 100))
-
-    # add a circle renderer with a size, color, and alpha
+    # add circles for second visualisation
     right.circle(x2, y2, radius=s2, color="red", alpha=0.1)
 
     # show the results
     p=gridplot([[left,right]])
     show(p)
 
-
+#Computes the layout of the first visualisation
 def computeNode1(node, xx, yy, ss, depth, ang):
     global x, y, s, colors
 
@@ -65,18 +69,13 @@ def computeNode1(node, xx, yy, ss, depth, ang):
                      depth + 1,
                      angle)
 
-
+#Computes the layout of second visualisation
 def computeNode2(node, xx, yy, ss, depth):
     global x2, y2, s2, colors2
 
     x2.append(xx)
     y2.append(yy)
     s2.append(ss)
-
-    # colors.append("#{:02x}{:02x}{:02x}".format(
-    #    int(depth * 50),
-    #    int(depth * 50),
-    #    150))
 
     m = len(node.children)
     if(m == 0):
