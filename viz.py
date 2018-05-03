@@ -1,4 +1,5 @@
 from bokeh.plotting import figure, output_file, show
+from bokeh.models import BoxZoomTool
 from ete3 import Tree
 import math
 
@@ -14,14 +15,25 @@ def main(tree):
     # output to static HTML file
     output_file("line.html")
 
-    p = figure(plot_width=400, plot_height=400,
-               x_range=(-100, 100), y_range=(-100, 100))
+    plot = figure(
+        plot_width=400,
+        plot_height=400,
+        x_range=(-100, 100),
+        y_range=(-100, 100),
+        tools="wheel_zoom,reset,pan,save,lasso_select,box_select")
+
+    box_zoom = BoxZoomTool(match_aspect=True)
+    plot.add_tools(box_zoom)
+
+    # pip not updated yet for new bokeh ver
+    #wheel_zoom = WheelZoomTool(zoom_on_axis=False)
+    # plot.add_tools(wheel_zoom)
 
     # add a circle renderer with a size, color, and alpha
-    p.circle(x, y, radius=s, color=colors, alpha=1)
+    plot.circle(x, y, radius=s, color=colors, alpha=1)
 
     # show the results
-    show(p)
+    show(plot)
 
 
 def computeNode(node, xx, yy, ss, depth, ang):
@@ -34,20 +46,14 @@ def computeNode(node, xx, yy, ss, depth, ang):
     s.append(ss)
 
     colors.append("#{:02x}{:02x}{:02x}".format(
-        int(depth * 50), 
-        int(depth * 50), 
-        150))
+        int(depth * 50), int(depth * 50), 150))
 
     m = len(node.children)
-    if(m == 0):
+    if (m == 0):
         return
 
     for i in range(m):
         angle = (ang - t / 2 + t * i / m + t / (2 * m))
         rad = min(ss * math.sin(t / (2 * m)), ss / 2)
-        computeNode(node.children[i],
-                    xx + math.cos(angle) * ss,
-                    yy + math.sin(angle) * ss,
-                    rad,
-                    depth + 1,
-                    angle)
+        computeNode(node.children[i], xx + math.cos(angle) * ss,
+                    yy + math.sin(angle) * ss, rad, depth + 1, angle)
