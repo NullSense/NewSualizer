@@ -91,6 +91,13 @@ def compute_figures(tree):
         alpha=0.1,
         source=source)
 
+    # Remove grid lines
+    fig_list[0].xgrid.visible = False
+    fig_list[0].ygrid.visible = False
+
+    fig_list[1].xgrid.visible = False
+    fig_list[1].ygrid.visible = False
+
     return fig_list
 
 
