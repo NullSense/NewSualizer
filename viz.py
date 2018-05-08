@@ -8,6 +8,8 @@ x1 = []
 y1 = []
 s1 = []  # size of circles
 colors1 = []
+name = []
+n_leaves = []
 
 # These store the layout of the second visualisation
 x2 = []
@@ -25,7 +27,7 @@ def main(tree):
     output_file("line.html")
 
     source = ColumnDataSource(
-        data=dict(x1=x1, y1=y1, s1=s1, x2=x2, y2=y2, s2=s2, colors1=colors1))
+        data=dict(x1=x1, y1=y1, s1=s1, x2=x2, y2=y2, s2=s2, colors1=colors1, name=name, n_leaves=n_leaves))
 
     # tools for each fig
     tools = [
@@ -37,7 +39,7 @@ def main(tree):
         ResetTool(),
         PanTool(),
         TapTool(),
-        HoverTool(tooltips=[("index", "$index"), ("radius", "@s2")])
+        HoverTool(tooltips=[("Name: ", "@name"), ("Radius: ", "@s2"), ("Leaves in subtree: ", "@n_leaves")])
     ]
 
     # dimensions and tools of each fig
@@ -79,6 +81,8 @@ def computeNode1(node, xx, yy, size, depth, ang):
     x1.append(xx)
     y1.append(yy)
     s1.append(size)
+    name.append('unnamed' if node.name == '' else node.name)
+    n_leaves.append(len(node))
 
     colors1.append("#{:02x}{:02x}{:02x}".format(
         int(depth * 50), int(depth * 50), 150))
