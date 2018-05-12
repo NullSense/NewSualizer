@@ -45,8 +45,28 @@ def compute_figures(tree):
             y2=y2,
             radius2=radius2,
             colors1=colors1,
+            collapsed=[False] * len(x1),
             name=name,
             num_leaves=num_leaves))
+    fil = BooleanFilter([True] * len(x1))
+    view = CDSView(source=source, filters=[fil])
+
+    collapse = '''
+    sel = source.selected.indices[0];
+    //fil.booleans[sel] = false;
+    var d = source.data;
+    var collapsed=d['collapsed'][sel];
+    d['collapsed'][sel]=!collapsed;
+    var s = function (x) {return x*x;};
+    for (i = 0; i < d['x2'].length; i++) {
+        if(s(d['x2'][sel]-d['x2'][i])+s(d['y2'][sel]-d['y2'][i])<s(d['radius2'][sel]) && sel != i) {
+            fil.booleans[i] = collapsed;
+            d['collapsed'][i]=!collapsed;
+        }
+    }
+    view.filters = [fil];
+    source.change.emit();
+    '''
 
     # tools for each fig
     tools = [
@@ -57,7 +77,7 @@ def compute_figures(tree):
         BoxSelectTool(),
         ResetTool(),
         PanTool(),
-        TapTool(),
+        TapTool(callback=CustomJS(args=dict(source=source, fil=fil, view=view), code=collapse)),
         HoverTool(tooltips=[("Name: ", "@name"), ("Leaves in subtree: ",
                                                   "@num_leaves")])
     ]
@@ -80,7 +100,8 @@ def compute_figures(tree):
         fill_color='colors1',
         line_color='colors1',
         alpha=1,
-        source=source)
+        source=source,
+        view=view)
 
     fig_list[1].circle(
         'x2',
@@ -89,7 +110,8 @@ def compute_figures(tree):
         fill_color='red',
         line_color='red',
         alpha=0.1,
-        source=source)
+        source=source,
+        view=view)
 
     # Remove grid lines
     fig_list[0].xgrid.visible = False
@@ -116,7 +138,7 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     num_leaves.append(len(node))
 
     colors1.append("#{:02x}{:02x}{:02x}".format(
-        int(depth * 50), int(depth * 50), 150))
+        230, int(depth * 40) % 230, 10))
 
     m = len(node.children)
     if (m == 0):
