@@ -68,20 +68,6 @@ def compute_figures(tree):
     source.change.emit();
     '''
 
-    # tools for each fig
-    tools = [
-        BoxZoomTool(match_aspect=True),
-        # TODO: Disable wheel axis zoom
-        WheelZoomTool(),
-        LassoSelectTool(),
-        BoxSelectTool(),
-        ResetTool(),
-        PanTool(),
-        TapTool(callback=CustomJS(args=dict(source=source, fil=fil, view=view), code=collapse)),
-        HoverTool(tooltips=[("Name: ", "@name"), ("Leaves in subtree: ",
-                                                  "@num_leaves")])
-    ]
-
     # dimensions and tools of each fig
     fig_list = [
         figure(
@@ -89,9 +75,18 @@ def compute_figures(tree):
             plot_height=800,
             x_range=(-100, 100),
             y_range=(-100, 100),
-            tools=tools) for i in range(2)
+            tools=[
+                "box_select,lasso_select,reset,wheel_zoom,pan",
+                BoxZoomTool(match_aspect=True),
+                TapTool(
+                    callback=CustomJS(
+                        args=dict(source=source, fil=fil, view=view),
+                        code=collapse)),
+                HoverTool(tooltips=[("Name: ",
+                                     "@name"), ("Leaves in subtree: ",
+                                                "@num_leaves")]),
+            ]) for i in range(2)
     ]
-
     # add circles to visualizations
     fig_list[0].circle(
         'x1',
@@ -137,8 +132,8 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     name.append('unnamed' if node.name == '' else node.name)
     num_leaves.append(len(node))
 
-    colors1.append("#{:02x}{:02x}{:02x}".format(
-        230, int(depth * 40) % 230, 10))
+    colors1.append("#{:02x}{:02x}{:02x}".format(230,
+                                                int(depth * 40) % 230, 10))
 
     m = len(node.children)
     if (m == 0):
@@ -148,6 +143,7 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
         angle = (ang - t / 2 + t * i / m + t / (2 * m))
 
         radius = min(size * math.sin(t / (2 * m)), size / 2)
+
         compute_visualization1(node.children[i], x1, y1, radius1, colors1,
                                name, num_leaves, xx + math.cos(angle) * size,
                                yy + math.sin(angle) * size, radius, depth + 1,
