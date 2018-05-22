@@ -6,15 +6,15 @@ import math
 num_elements = 0
 
 
-def main(tree):
-    fig_list = compute_figures(tree)
+def main(tree, filename):
+    fig_list = compute_figures(tree, filename)
 
     pre = PreText(text="Number of elements: " + str(num_elements))
 
     show(gridplot([[pre], fig_list]))
 
 
-def compute_figures(tree):
+def compute_figures(tree, filename):
     # These store the layout of the first visualisation
     x1 = []
     y1 = []
@@ -36,7 +36,7 @@ def compute_figures(tree):
     compute_visualization2(tree, x2, y2, radius2, 0.0, 0.0, 80.0, 1)
 
     # output to static HTML file
-    output_file("line.html")
+    output_file("HTML/" + filename + ".html")
 
     source = ColumnDataSource(
         data=dict(
@@ -76,47 +76,25 @@ def compute_figures(tree):
     source.change.emit();
     '''
 
-    # tools for each fig
-    tools = [
-        BoxZoomTool(match_aspect=True),
-        # TODO: Disable wheel axis zoom
-        WheelZoomTool(),
-        LassoSelectTool(),
-        BoxSelectTool(),
-        ResetTool(),
-        PanTool(),
-        TapTool(callback=CustomJS(
-                args=dict(source=source, fil=fil, view1=view1, view2=view2),
-                code=collapse)),
-        HoverTool(tooltips=[("Name: ", "@name"), ("Leaves in subtree: ",
-                                                  "@num_leaves")])
-    ]
-
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=500,
-            plot_height=500,
+            plot_width=600,
+            plot_height=600,
             x_range=(-100, 100),
             y_range=(-100, 100),
             tools=[
+                "box_select,lasso_select,reset,wheel_zoom,pan",
                 BoxZoomTool(match_aspect=True),
-                # TODO: Disable wheel axis zoom
-                WheelZoomTool(),
-                LassoSelectTool(),
-                BoxSelectTool(),
-                ResetTool(),
-                PanTool(),
-                TapTool(callback=CustomJS(
-                    args=dict(source=source, fil=fil,
-                              view1=view1, view2=view2),
-                    code=collapse)),
-                HoverTool(tooltips=[("Name: ", "@name"), ("Leaves in subtree: ",
-                                                          "@num_leaves")])
-            ],
-            toolbar_location="left" if i == 0 else "right") for i in range(2)
+                TapTool(
+                    callback=CustomJS(
+                        args=dict(source=source, fil=fil, view1=view1, view2=view2),
+                        code=collapse)),
+                HoverTool(tooltips=[("Name: ",
+                                     "@name"), ("Leaves in subtree: ",
+                                                "@num_leaves")]),
+            ]) for i in range(2)
     ]
-
     # add circles to visualizations
     fig_list[0].circle(
         'x1',
@@ -125,7 +103,8 @@ def compute_figures(tree):
         fill_color='colors1',
         line_color='colors1',
         alpha=1,
-        source=source
+        source=source,
+        view=view1
         )
 
     fig_list[1].circle(
@@ -135,7 +114,8 @@ def compute_figures(tree):
         fill_color='red',
         line_color='red',
         alpha=0.1,
-        source=source)
+        source=source,
+        view=view2)
 
     # Remove grid lines
     fig_list[0].xgrid.visible = False
@@ -177,8 +157,8 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     name.append('unnamed' if node.name == '' else node.name)
     num_leaves.append(len(node))
 
-    colors1.append("#{:02x}{:02x}{:02x}".format(
-        230, int(depth * 40) % 230, 10))
+    colors1.append("#{:02x}{:02x}{:02x}".format(230,
+                                                int(depth * 40) % 230, 10))
 
     m = len(node.children)
     if (m == 0):
@@ -193,6 +173,7 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
         angle = (ang - t / 2 + t * i / m + t / (2 * m))
 
         radius = min(size * math.sin(t / (2 * m)), size / 2)
+
         compute_visualization1(node.children[i], x1, y1, radius1, colors1,
                                name, num_leaves, xx +
                                math.cos(angle) * size,
