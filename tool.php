@@ -106,10 +106,11 @@
 
                     <?php
 
-                    $entries = scandir("Trees");
+                    $entries = scandir("HTML");
                     $filelist = array();
                     foreach ($entries as $entry) {
 
+                        $entry = trim($entry, ".html");
                         $filelist[] = $entry;
                     }
 
@@ -119,13 +120,10 @@
                         echo '<tr>';
                         echo '<td class="mdl-data-table__cell--">' . $count . '</td>';
                         echo '<td class="mdl-data-table__cell--non-numeric">' . $filelist[$i] . '</td>';
-                        $str = 'uploads/' . $filelist[$i];
+                        $str = 'HTML/' . $filelist[$i];
                         echo '<td class="mdl-data-table__cell">' . filesize($str) / 1000 . '</td>';
                         echo '<td class="mdl-data-table__cell">' . date("F d Y H:i:s.", filemtime($str)) . '</td>';
-
-
-                        echo '<td><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-' . $i . '">
-                 	<input type="checkbox" value="'.$filelist[i]. '"name= "dataset" id="checkbox-' . $i . '" class="mdl-checkbox__input" unchecked> </label> </td>';
+                        echo '<td><label><input type="checkbox" name= "dataset[]" id="dataset"  value="'.$filelist[$i].'"> </label> </td>';
                         echo '</tr>';
 
                     }
