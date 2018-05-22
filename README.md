@@ -32,7 +32,7 @@ A project that visualizes hierarchical datasets in the newick format.
     > pip install -r requirements.txt
 
 - Console (python 3)
-    > python HDTree.py Trees/file.tre
+    > python HDTrees.py Trees/file.tre
 
 ## Interactions:
 
