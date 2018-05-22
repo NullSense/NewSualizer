@@ -23,9 +23,11 @@ def compute_figures(tree):
     name = []
     num_leaves = []
     num_elements = 0  # number of elements in the whole tree
+    low = []
+    high = []
     # Compute the layout of both visualisations
-    num_elements = compute_visualization1(tree, x1, y1, radius1, colors1, name,
-                                          num_leaves, 0.0, 0.0, 50.0, 1, 0.0)
+    compute_visualization1(tree, x1, y1, radius1, colors1, name, num_leaves,
+                           0.0, 0.0, 50.0, 1, 0.0, low, high)
 
     # These store the layout of the second visualisation
     x2 = []
@@ -47,24 +49,30 @@ def compute_figures(tree):
             colors1=colors1,
             collapsed=[False] * len(x1),
             name=name,
-            num_leaves=num_leaves))
+            num_leaves=num_leaves,
+            low=low,
+            high=high))
     fil = BooleanFilter([True] * len(x1))
-    view = CDSView(source=source, filters=[fil])
+    view1 = CDSView(source=source, filters=[fil])
+    view2 = CDSView(source=source, filters=[fil])
 
     collapse = '''
     sel = source.selected.indices[0];
-    //fil.booleans[sel] = false;
+
     var d = source.data;
     var collapsed=d['collapsed'][sel];
     d['collapsed'][sel]=!collapsed;
-    var s = function (x) {return x*x;};
-    for (i = 0; i < d['x2'].length; i++) {
-        if(s(d['x2'][sel]-d['x2'][i])+s(d['y2'][sel]-d['y2'][i])<s(d['radius2'][sel]) && sel != i) {
+    low=d['low'][sel];
+    high=d['high'][sel];
+
+    if(low>-1)
+        for (i = low; i <= high; i++) {
             fil.booleans[i] = collapsed;
             d['collapsed'][i]=!collapsed;
         }
-    }
-    view.filters = [fil];
+
+    view1.filters[0] = fil;
+    view2.filters[0] = fil;
     source.change.emit();
     '''
 
@@ -77,7 +85,9 @@ def compute_figures(tree):
         BoxSelectTool(),
         ResetTool(),
         PanTool(),
-        TapTool(callback=CustomJS(args=dict(source=source, fil=fil, view=view), code=collapse)),
+        TapTool(callback=CustomJS(
+                args=dict(source=source, fil=fil, view1=view1, view2=view2),
+                code=collapse)),
         HoverTool(tooltips=[("Name: ", "@name"), ("Leaves in subtree: ",
                                                   "@num_leaves")])
     ]
@@ -85,11 +95,26 @@ def compute_figures(tree):
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=800,
-            plot_height=800,
+            plot_width=500,
+            plot_height=500,
             x_range=(-100, 100),
             y_range=(-100, 100),
-            tools=tools) for i in range(2)
+            tools=[
+                BoxZoomTool(match_aspect=True),
+                # TODO: Disable wheel axis zoom
+                WheelZoomTool(),
+                LassoSelectTool(),
+                BoxSelectTool(),
+                ResetTool(),
+                PanTool(),
+                TapTool(callback=CustomJS(
+                    args=dict(source=source, fil=fil,
+                              view1=view1, view2=view2),
+                    code=collapse)),
+                HoverTool(tooltips=[("Name: ", "@name"), ("Leaves in subtree: ",
+                                                          "@num_leaves")])
+            ],
+            toolbar_location="left" if i == 0 else "right") for i in range(2)
     ]
 
     # add circles to visualizations
@@ -100,8 +125,8 @@ def compute_figures(tree):
         fill_color='colors1',
         line_color='colors1',
         alpha=1,
-        source=source,
-        view=view)
+        source=source
+        )
 
     fig_list[1].circle(
         'x2',
@@ -110,8 +135,7 @@ def compute_figures(tree):
         fill_color='red',
         line_color='red',
         alpha=0.1,
-        source=source,
-        view=view)
+        source=source)
 
     # Remove grid lines
     fig_list[0].xgrid.visible = False
@@ -123,13 +147,29 @@ def compute_figures(tree):
     return fig_list
 
 
+# Filters for optimization
+def compute_filters(r1, r2):
+    radii = [1, 0.2, 0.04]
+    opt_filters = []
+    for j in range(len(radii)):
+        opt_filters.extend([IndexFilter(indices=[]) for i in range(2)])
+        for i in range(len(r1)):
+            if(r1[i] > radii[j]):
+                opt_filters[j * 2].indices.append(i)
+            if(r2[i] > radii[j]):
+                opt_filters[j * 2 + 1].indices.append(i)
+    return opt_filters
+
+
 # Computes the layout of the first visualisation
 def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
-                           xx, yy, size, depth, ang):
+                           xx, yy, size, depth, ang, low, high):
     global num_elements
     num_elements += 1
 
     t = 2 * math.pi if depth == 1 else math.pi / 1.3
+
+    index = len(x1)
 
     x1.append(xx)
     y1.append(yy)
@@ -142,17 +182,25 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
 
     m = len(node.children)
     if (m == 0):
+        low.append(-1)
+        high.append(-1)
         return
+
+    low.append(index + 1)
+    high.append(0)
 
     for i in range(m):
         angle = (ang - t / 2 + t * i / m + t / (2 * m))
 
         radius = min(size * math.sin(t / (2 * m)), size / 2)
         compute_visualization1(node.children[i], x1, y1, radius1, colors1,
-                               name, num_leaves, xx + math.cos(angle) * size,
-                               yy + math.sin(angle) * size, radius, depth + 1,
-                               angle)
-    return num_elements
+                               name, num_leaves, xx +
+                               math.cos(angle) * size,
+                               yy +
+                               math.sin(
+            angle) * size, radius, depth + 1,
+            angle, low, high)
+    high[index] = len(x1) - 1
 
 
 # Computes the layout of second visualisation
