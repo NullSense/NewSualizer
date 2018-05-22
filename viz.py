@@ -6,15 +6,15 @@ import math
 num_elements = 0
 
 
-def main(tree):
-    fig_list = compute_figures(tree)
+def main(tree, filename):
+    fig_list = compute_figures(tree, filename)
 
     pre = PreText(text="Number of elements: " + str(num_elements))
 
     show(gridplot([[pre], fig_list]))
 
 
-def compute_figures(tree):
+def compute_figures(tree, filename):
     # These store the layout of the first visualisation
     x1 = []
     y1 = []
@@ -34,7 +34,7 @@ def compute_figures(tree):
     compute_visualization2(tree, x2, y2, radius2, 0.0, 0.0, 80.0, 1)
 
     # output to static HTML file
-    output_file("line.html")
+    output_file("HTML/" + filename + ".html")
 
     source = ColumnDataSource(
         data=dict(
@@ -71,8 +71,8 @@ def compute_figures(tree):
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=800,
-            plot_height=800,
+            plot_width=600,
+            plot_height=600,
             x_range=(-100, 100),
             y_range=(-100, 100),
             tools=[
