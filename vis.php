@@ -17,13 +17,15 @@ foreach ($name as $dataset){
     break;
 }
 
-$root = $root.$link.$root.".html";
+$root = $root.$link;
 
 //echo $root;
 
 header('Location: HTML/'.$root);
 
-/*$command = escapeshellcmd('python HDTrees.py Trees/ancestor.tre');
+/*
+ *
+ * $command = escapeshellcmd('python HDTrees.py Trees/ancestor.tre');
 $output = shell_exec($command);
 echo $output;
 

@@ -109,8 +109,6 @@
                     $entries = scandir("HTML");
                     $filelist = array();
                     foreach ($entries as $entry) {
-
-                        $entry = trim($entry, ".html");
                         $filelist[] = $entry;
                     }
 
@@ -118,8 +116,10 @@
                     for ($i = 2; $i < count($filelist); $i++) {
                         $count++;
                         echo '<tr>';
+                       // $entry2 = trim($filelist[$i], ".html");
+                        $entry2 = $filelist[$i];
                         echo '<td class="mdl-data-table__cell--">' . $count . '</td>';
-                        echo '<td class="mdl-data-table__cell--non-numeric">' . $filelist[$i] . '</td>';
+                        echo '<td class="mdl-data-table__cell--non-numeric">' . $entry2 . '</td>';
                         $str = 'HTML/' . $filelist[$i];
                         echo '<td class="mdl-data-table__cell">' . filesize($str) / 1000 . '</td>';
                         echo '<td class="mdl-data-table__cell">' . date("F d Y H:i:s.", filemtime($str)) . '</td>';

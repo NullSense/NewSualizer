@@ -12,8 +12,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $filename = $_FILES["fileToUpload"]["name"];
         $filetype = $_FILES["fileToUpload"]["type"];
         $filesize = $_FILES["fileToUpload"]["size"];
-        move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "uploads/" . $_FILES["fileToUpload"]["name"]);
+        move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "Trees/" . $_FILES["fileToUpload"]["name"]);
     }
+
+
+
+    $command = escapeshellcmd('python HDTrees.py Trees/'.$_FILES["fileToUpload"]["name"]);
+    $output = shell_exec($command);
+    echo $output;
+
+
+
+
+
 
     header('Location: tool.php');
     exit;
