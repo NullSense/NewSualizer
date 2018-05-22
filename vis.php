@@ -6,24 +6,28 @@
  * Time: 11:27
  */
 
-/*if (isset($_POST['dataset[1]'])) {
 
-   echo 2;
+
+
+$name = $_POST['dataset'];
+$root = "";
+
+foreach ($name as $dataset){
+    $link = $dataset;
+    break;
 }
-else
-echo 1;
-*/
 
-$command = escapeshellcmd('python HDTrees.py Trees/ancestor.tre');
+$root = $root.$link.$root.".html";
+
+//echo $root;
+
+header('Location: HTML/'.$root);
+
+/*$command = escapeshellcmd('python HDTrees.py Trees/ancestor.tre');
 $output = shell_exec($command);
 echo $output;
 
 
-/* $x = rand(1, 10);
-if($x %2 == 0)
-header("Location: type1.html");
-else
-header("Location: type2.html");
 */
 
 
