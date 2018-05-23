@@ -123,7 +123,7 @@
                         $str = 'HTML/' . $filelist[$i];
                         echo '<td class="mdl-data-table__cell">' . filesize($str) / 1000 . '</td>';
                         echo '<td class="mdl-data-table__cell">' . date("F d Y H:i:s.", filemtime($str)) . '</td>';
-                        echo '<td><label><input type="checkbox" name= "dataset[]" id="dataset"  value="'.$filelist[$i].'"> </label> </td>';
+                        echo '<td><label><input class="single-checkbox" type="checkbox" name= "dataset[]" id="dataset"  value="'.$filelist[$i].'"> </label> </td>';
                         echo '</tr>';
 
                     }
@@ -170,6 +170,12 @@
     function showDiv() {
         document.getElementById('wDiv').style.display = "block";
     }
+
+
+
+
+
+
 </script>
 </body>
 </html>
