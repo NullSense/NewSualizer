@@ -25,6 +25,7 @@ def compute_figures(tree, filename):
     num_elements = 0  # number of elements in the whole tree
     low = []
     high = []
+    
     # Compute the layout of both visualisations
     compute_visualization1(tree, x1, y1, radius1, colors1, name, num_leaves,
                            0.0, 0.0, 50.0, 1, 0.0, low, high)
@@ -51,28 +52,29 @@ def compute_figures(tree, filename):
             name=name,
             num_leaves=num_leaves,
             low=low,
-            high=high))
-    fil = BooleanFilter([True] * len(x1))
-    view1 = CDSView(source=source, filters=[fil])
-    view2 = CDSView(source=source, filters=[fil])
+            high=high,
+            alpha1=[1] * len(x1),
+            alpha2=[0.25] * len(x1)))
 
     collapse = '''
     sel = source.selected.indices[0];
 
     var d = source.data;
+
     var collapsed=d['collapsed'][sel];
     d['collapsed'][sel]=!collapsed;
+
     low=d['low'][sel];
     high=d['high'][sel];
 
     if(low>-1)
         for (i = low; i <= high; i++) {
-            fil.booleans[i] = collapsed;
+            d['alpha1'][i] = +collapsed;
+            d['alpha2'][i] = collapsed*0.25;
             d['collapsed'][i]=!collapsed;
         }
 
-    view1.filters[0] = fil;
-    view2.filters[0] = fil;
+    source.selected.indices = [];
     source.change.emit();
     '''
 
@@ -88,7 +90,7 @@ def compute_figures(tree, filename):
                 BoxZoomTool(match_aspect=True),
                 TapTool(
                     callback=CustomJS(
-                        args=dict(source=source, fil=fil, view1=view1, view2=view2),
+                        args=dict(source=source),
                         code=collapse)),
                 HoverTool(tooltips=[("Name: ",
                                      "@name"), ("Leaves in subtree: ",
@@ -102,9 +104,8 @@ def compute_figures(tree, filename):
         radius='radius1',
         fill_color='colors1',
         line_color='colors1',
-        alpha=1,
-        source=source,
-        view=view1
+        alpha='alpha1',
+        source=source
         )
 
     fig_list[1].circle(
@@ -113,9 +114,8 @@ def compute_figures(tree, filename):
         radius='radius2',
         fill_color='red',
         line_color='red',
-        alpha=0.1,
-        source=source,
-        view=view2)
+        alpha='alpha2',
+        source=source)
 
     # Remove grid lines
     fig_list[0].xgrid.visible = False
