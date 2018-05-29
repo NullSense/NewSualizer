@@ -54,7 +54,7 @@ def compute_figures(tree, filename):
             low=low,
             high=high,
             alpha1=[1] * len(x1),
-            alpha2=[0.25] * len(x1)))
+            alpha2=[0.2] * len(x1)))
 
     collapse = '''
     sel = source.selected.indices[0];
@@ -67,10 +67,10 @@ def compute_figures(tree, filename):
     low=d['low'][sel];
     high=d['high'][sel];
 
-    if(low>-1)
+    if(low>-1 && d['alpha'][sel]>0)
         for (i = low; i <= high; i++) {
             d['alpha1'][i] = +collapsed;
-            d['alpha2'][i] = collapsed*0.25;
+            d['alpha2'][i] = collapsed*0.2;
             d['collapsed'][i]=!collapsed;
         }
 
@@ -157,8 +157,9 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     name.append('unnamed' if node.name == '' else node.name)
     num_leaves.append(len(node))
 
-    colors1.append("#{:02x}{:02x}{:02x}".format(230,
-                                                int(depth * 40) % 230, 10))
+    colors1.append("#{:02x}{:02x}{:02x}".format(int(depth * 50),
+                                                int(depth * 50),
+                                                150))
 
     m = len(node.children)
     if (m == 0):
