@@ -7,7 +7,6 @@
  */
 
 
-session_start();
 
 
 $name = $_POST['dataset'];
@@ -19,13 +18,11 @@ foreach ($name as $dataset){
 }
 
 $root = $root.$link;
-$dk = '/?'.$root;
-$_SESSION['link'] = $root;
-$_SESSION['k'] = 2;
 
-//header('Location: HTML/'.$root);
-header('Location: tool.php'.$dk);
-exit;
+//echo $root;
+
+header('Location: HTML/'.$root);
+
 /*
  *
  * $command = escapeshellcmd('python HDTrees.py Trees/ancestor.tre');
