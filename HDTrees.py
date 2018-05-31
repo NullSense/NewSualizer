@@ -29,11 +29,15 @@ def parse_file(file):
 
     tree_string = scan_file(file)
     tree_string = remove_leading(tree_string)
-
     # temporary workaround, cause Tree() thinks string is path
     write_to_file(tree_string, file)
     tree = Tree(file, format=1)
     return tree
+
+
+def get_filename():
+    filename = sys.argv[1].split('/', 1)[-1].split('.', 1)[0]
+    return filename
 
 
 def main():
@@ -41,7 +45,7 @@ def main():
     # to run: python HDTrees.py Trees/filename.tre
     tree_output = parse_file(sys.argv[1])  # 2nd arg (file with dir)
 
-    viz.main(tree_output)
+    viz.main(tree_output, get_filename())
 
 
 main()

@@ -6,15 +6,15 @@ import math
 num_elements = 0
 
 
-def main(tree):
-    fig_list = compute_figures(tree)
+def main(tree, filename):
+    fig_list = compute_figures(tree, filename)
 
     pre = PreText(text="Number of elements: " + str(num_elements))
 
     show(gridplot([[pre], fig_list]))
 
 
-def compute_figures(tree):
+def compute_figures(tree, filename):
     # These store the layout of the first visualisation
     x1 = []
     y1 = []
@@ -23,9 +23,12 @@ def compute_figures(tree):
     name = []
     num_leaves = []
     num_elements = 0  # number of elements in the whole tree
+    low = []
+    high = []
+    
     # Compute the layout of both visualisations
-    num_elements = compute_visualization1(tree, x1, y1, radius1, colors1, name,
-                                          num_leaves, 0.0, 0.0, 50.0, 1, 0.0)
+    compute_visualization1(tree, x1, y1, radius1, colors1, name, num_leaves,
+                           0.0, 0.0, 50.0, 1, 0.0, low, high)
 
     # These store the layout of the second visualisation
     x2 = []
@@ -34,7 +37,7 @@ def compute_figures(tree):
     compute_visualization2(tree, x2, y2, radius2, 0.0, 0.0, 80.0, 1)
 
     # output to static HTML file
-    output_file("line.html")
+    output_file("HTML/" + filename + ".html")
 
     source = ColumnDataSource(
         data=dict(
@@ -47,32 +50,39 @@ def compute_figures(tree):
             colors1=colors1,
             collapsed=[False] * len(x1),
             name=name,
-            num_leaves=num_leaves))
-    fil = BooleanFilter([True] * len(x1))
-    view = CDSView(source=source, filters=[fil])
+            num_leaves=num_leaves,
+            low=low,
+            high=high,
+            alpha1=[1] * len(x1),
+            alpha2=[0.2] * len(x1)))
 
     collapse = '''
     sel = source.selected.indices[0];
-    //fil.booleans[sel] = false;
+
     var d = source.data;
+
     var collapsed=d['collapsed'][sel];
     d['collapsed'][sel]=!collapsed;
-    var s = function (x) {return x*x;};
-    for (i = 0; i < d['x2'].length; i++) {
-        if(s(d['x2'][sel]-d['x2'][i])+s(d['y2'][sel]-d['y2'][i])<s(d['radius2'][sel]) && sel != i) {
-            fil.booleans[i] = collapsed;
+
+    low=d['low'][sel];
+    high=d['high'][sel];
+
+    if(low>-1 && d['alpha'][sel]>0)
+        for (i = low; i <= high; i++) {
+            d['alpha1'][i] = +collapsed;
+            d['alpha2'][i] = collapsed*0.2;
             d['collapsed'][i]=!collapsed;
         }
-    }
-    view.filters = [fil];
+
+    source.selected.indices = [];
     source.change.emit();
     '''
 
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=800,
-            plot_height=800,
+            plot_width=600,
+            plot_height=600,
             x_range=(-100, 100),
             y_range=(-100, 100),
             tools=[
@@ -80,7 +90,7 @@ def compute_figures(tree):
                 BoxZoomTool(match_aspect=True),
                 TapTool(
                     callback=CustomJS(
-                        args=dict(source=source, fil=fil, view=view),
+                        args=dict(source=source),
                         code=collapse)),
                 HoverTool(tooltips=[("Name: ",
                                      "@name"), ("Leaves in subtree: ",
@@ -94,9 +104,9 @@ def compute_figures(tree):
         radius='radius1',
         fill_color='colors1',
         line_color='colors1',
-        alpha=1,
-        source=source,
-        view=view)
+        alpha='alpha1',
+        source=source
+        )
 
     fig_list[1].circle(
         'x2',
@@ -104,9 +114,8 @@ def compute_figures(tree):
         radius='radius2',
         fill_color='red',
         line_color='red',
-        alpha=0.1,
-        source=source,
-        view=view)
+        alpha='alpha2',
+        source=source)
 
     # Remove grid lines
     fig_list[0].xgrid.visible = False
@@ -118,13 +127,29 @@ def compute_figures(tree):
     return fig_list
 
 
+# Filters for optimization
+def compute_filters(r1, r2):
+    radii = [1, 0.2, 0.04]
+    opt_filters = []
+    for j in range(len(radii)):
+        opt_filters.extend([IndexFilter(indices=[]) for i in range(2)])
+        for i in range(len(r1)):
+            if(r1[i] > radii[j]):
+                opt_filters[j * 2].indices.append(i)
+            if(r2[i] > radii[j]):
+                opt_filters[j * 2 + 1].indices.append(i)
+    return opt_filters
+
+
 # Computes the layout of the first visualisation
 def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
-                           xx, yy, size, depth, ang):
+                           xx, yy, size, depth, ang, low, high):
     global num_elements
     num_elements += 1
 
     t = 2 * math.pi if depth == 1 else math.pi / 1.3
+
+    index = len(x1)
 
     x1.append(xx)
     y1.append(yy)
@@ -132,12 +157,18 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     name.append('unnamed' if node.name == '' else node.name)
     num_leaves.append(len(node))
 
-    colors1.append("#{:02x}{:02x}{:02x}".format(230,
-                                                int(depth * 40) % 230, 10))
+    colors1.append("#{:02x}{:02x}{:02x}".format(int(depth * 50),
+                                                int(depth * 50),
+                                                150))
 
     m = len(node.children)
     if (m == 0):
+        low.append(-1)
+        high.append(-1)
         return
+
+    low.append(index + 1)
+    high.append(0)
 
     for i in range(m):
         angle = (ang - t / 2 + t * i / m + t / (2 * m))
@@ -145,10 +176,13 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
         radius = min(size * math.sin(t / (2 * m)), size / 2)
 
         compute_visualization1(node.children[i], x1, y1, radius1, colors1,
-                               name, num_leaves, xx + math.cos(angle) * size,
-                               yy + math.sin(angle) * size, radius, depth + 1,
-                               angle)
-    return num_elements
+                               name, num_leaves, xx +
+                               math.cos(angle) * size,
+                               yy +
+                               math.sin(
+            angle) * size, radius, depth + 1,
+            angle, low, high)
+    high[index] = len(x1) - 1
 
 
 # Computes the layout of second visualisation
