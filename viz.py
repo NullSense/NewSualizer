@@ -9,7 +9,7 @@ num_elements = 0
 def main(tree, filename):
     fig_list = compute_figures(tree, filename)
 
-    pre = PreText(text="Number of elements: " + str(num_elements))
+    pre = Div(text='<div style="font-size: 15px ;">Dataset: <i>'+filename+'</i><br>Number of elements: <i>' + str(num_elements)+"</i></div>")
 
     show(gridplot([[pre], fig_list], sizing_mode='scale_width', merge_tools=True))
 
@@ -81,8 +81,8 @@ def compute_figures(tree, filename):
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=400,
-            plot_height=400,
+            plot_width=300,
+            plot_height=300,
             x_range=(-100, 100),
             y_range=(-100, 100),
             sizing_mode='scale_both',
@@ -158,8 +158,8 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     name.append('unnamed' if node.name == '' else node.name)
     num_leaves.append(len(node))
 
-    colors1.append("#{:02x}{:02x}{:02x}".format(int(depth * 50),
-                                                int(depth * 50),
+    colors1.append("#{:02x}{:02x}{:02x}".format(int(depth * 35),
+                                                int(depth * 35),
                                                 150))
 
     m = len(node.children)
