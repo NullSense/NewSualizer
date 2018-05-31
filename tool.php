@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php session_start();?>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css">
@@ -11,6 +11,8 @@
     <meta charset="UTF-8">
     <title>HD TREE</title>
 </head>
+
+
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
@@ -127,18 +129,66 @@
                         echo '</tr>';
 
                     }
-
-
                     ?>
 
 
                     </tbody>
                 </table>
-                <input type="submit" value="submit" style="margin-left:25%; margin-top:2%;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
+                <div id="loading" style="display: none" >
+                    <div>Add message here</div>
+                    <div>
+                        <img src="images/rolling.svg" alt="" />
+                    </div>
+                </div>
+                <input type="submit" value="submit" id="submit_btn" style="margin-left:25%; margin-top:2%;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
             </form>
 
+            <?php
 
-        </div>
+            function curPageURL() {
+                $pageURL = 'http';
+                if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+                $pageURL .= "://";
+                $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+
+                return $pageURL;
+            }
+
+            // use
+            $word = curPageURL();
+            $lg = strlen($word);
+            $lg = $lg - 39;
+            $link = substr($word, -$lg);
+            $org = $link;
+            $aux = "../HTML";
+            $aux2 = chr(92);
+            $aux = $aux.$aux2;
+            $link = $aux.$link;
+            $ok = $_SESSION['k'];
+            
+
+            if($org < 20)
+            {   $pula = '</div><div style = "margin-left: 15%"><iframe style="position:absolute" src="'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
+                echo $pula;
+                session_destroy();
+            }
+
+
+
+
+
+
+
+
+           // echo $link;
+            //$pula = '</div><div style = "margin-left: 15%"><iframe style="position:absolute" src="'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
+
+          //  echo $pula;
+
+        ?>
+
+
+
     </main>
 </div>
 
@@ -173,8 +223,9 @@
 
 
 
+</script>
 
-
+<script>
 
 </script>
 </body>
