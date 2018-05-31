@@ -11,7 +11,7 @@ def main(tree, filename):
 
     pre = PreText(text="Number of elements: " + str(num_elements))
 
-    show(gridplot([[pre], fig_list]))
+    show(gridplot([[pre], fig_list], sizing_mode='scale_width', merge_tools=True))
 
 
 def compute_figures(tree, filename):
@@ -81,10 +81,11 @@ def compute_figures(tree, filename):
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=600,
-            plot_height=600,
+            plot_width=400,
+            plot_height=400,
             x_range=(-100, 100),
             y_range=(-100, 100),
+            sizing_mode='scale_both',
             tools=[
                 "box_select,lasso_select,reset,wheel_zoom,pan",
                 BoxZoomTool(match_aspect=True),
