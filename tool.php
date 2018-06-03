@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php session_start();?>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css">
@@ -11,6 +11,8 @@
     <meta charset="UTF-8">
     <title>HD TREE</title>
 </head>
+
+
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
@@ -29,8 +31,8 @@
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Dataset Dahsboard</span>
         <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="index.html">Landing Page</a>
-                <a class="mdl-navigation__link" href="http://www.treevis.net">Treevis.net</a>
+            <a class="mdl-navigation__link" href="index.html">Landing Page</a>
+            <a class="mdl-navigation__link" href="http://www.treevis.net">Treevis.net</a>
 
         </nav>
     </div>
@@ -116,7 +118,7 @@
                     for ($i = 2; $i < count($filelist); $i++) {
                         $count++;
                         echo '<tr>';
-                       // $entry2 = trim($filelist[$i], ".html");
+                        // $entry2 = trim($filelist[$i], ".html");
                         $entry2 = $filelist[$i];
                         echo '<td class="mdl-data-table__cell--">' . $count . '</td>';
                         echo '<td class="mdl-data-table__cell--non-numeric">' . $entry2 . '</td>';
@@ -127,18 +129,44 @@
                         echo '</tr>';
 
                     }
-
-
                     ?>
 
 
                     </tbody>
                 </table>
-                <input type="submit" value="submit" style="margin-left:25%; margin-top:2%;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
+                <div id="loading" style="display: none" >
+                    <div>Add message here</div>
+                    <div>
+                        <img src="images/rolling.svg" alt="" />
+                    </div>
+                </div>
+                <input type="submit" value="submit" id="submit_btn" style="margin-left:25%; margin-top:2%;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
             </form>
 
+            <?php
 
-        </div>
+            function curPageURL() {
+                $pageURL = 'http';
+                if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+                $pageURL .= "://";
+                $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+
+                return $pageURL;
+            }
+            $link = $_SESSION['link'];
+            if($link!=NULL)
+            {   $p = '</div><div style = "margin-left: 15%"><iframe style="position:absolute" src="HTML/'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
+                echo $p;
+                session_destroy();
+            }
+
+
+
+
+            ?>
+
+
+
     </main>
 </div>
 
@@ -173,8 +201,9 @@
 
 
 
+</script>
 
-
+<script>
 
 </script>
 </body>
