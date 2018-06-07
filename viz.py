@@ -54,26 +54,21 @@ def compute_figures(tree, filename):
             low=low,
             high=high,
             alpha1=[1] * len(x1),
-            alpha2=[0.2] * len(x1)))
+            alpha2=[0.25] * len(x1)))
 
     collapse = '''
     sel = source.selected.indices[0];
-
     var d = source.data;
-
     var collapsed=d['collapsed'][sel];
     d['collapsed'][sel]=!collapsed;
-
     low=d['low'][sel];
     high=d['high'][sel];
-
-    if(low>-1 && d['alpha'][sel]>0)
+    if(low>-1)
         for (i = low; i <= high; i++) {
             d['alpha1'][i] = +collapsed;
-            d['alpha2'][i] = collapsed*0.2;
+            d['alpha2'][i] = collapsed*0.25;
             d['collapsed'][i]=!collapsed;
         }
-
     source.selected.indices = [];
     source.change.emit();
     '''
@@ -81,11 +76,10 @@ def compute_figures(tree, filename):
     # dimensions and tools of each fig
     fig_list = [
         figure(
-            plot_width=300,
-            plot_height=300,
+            plot_width=600,
+            plot_height=600,
             x_range=(-100, 100),
             y_range=(-100, 100),
-            sizing_mode='scale_both',
             tools=[
                 "box_select,lasso_select,reset,wheel_zoom,pan",
                 BoxZoomTool(match_aspect=True),
@@ -158,9 +152,8 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     name.append('unnamed' if node.name == '' else node.name)
     num_leaves.append(len(node))
 
-    colors1.append("#{:02x}{:02x}{:02x}".format(int(depth * 35),
-                                                int(depth * 35),
-                                                150))
+    colors1.append("#{:02x}{:02x}{:02x}".format(230,
+                                                int(depth * 40) % 230, 10))
 
     m = len(node.children)
     if (m == 0):
