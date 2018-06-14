@@ -202,9 +202,18 @@
 
 
 </script>
-
 <script>
-
+    window.addEventListener('message',
+        function (e) {
+            var task = e.data['task'];
+            if(task=='start')
+                modalLoading.init(true);
+            if(task=='stop')
+                modalLoading.init(false);
+        },
+        false);
 </script>
+
+
 </body>
 </html>

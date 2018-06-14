@@ -13,6 +13,19 @@
 <script type="text/javascript">
     Bokeh.set_log_level("info");
 </script>
+
+        <script src="modalLoading.js"></script>
+        <script>
+            window.addEventListener('message',
+                function (e) {
+                    var task = e.data['task'];
+                    if(task=='start')
+                        modalLoading.init(true);
+                    if(task=='stop')
+                        modalLoading.init(false);
+                },
+                false);
+        </script>
     </head>
     <body>
         
