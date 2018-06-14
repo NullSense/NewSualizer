@@ -57,6 +57,7 @@ def compute_figures(tree, filename):
             alpha2=[0.2] * len(x1)))
 
     collapse = '''
+    parent.postMessage( {'task': 'start'}, '*');
     sel = source.selected.indices[0];
     var d = source.data;
     var collapsed=d['collapsed'][sel];
@@ -71,6 +72,7 @@ def compute_figures(tree, filename):
         }
     source.selected.indices = [];
     source.change.emit();
+    parent.postMessage( {'task': 'stop'}, '*');
     '''
 
     # dimensions and tools of each fig
