@@ -5,6 +5,18 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script src="modalLoading.js"></script>
+<script>
+window.addEventListener('message', 
+    function (e) {
+        var task = e.data['task'];
+        if(task=='start')
+            modalLoading.init(true);
+        if(task=='stop')
+            modalLoading.init(false);
+    }, 
+    false);
+  </script>
 
 
 <head>
@@ -202,18 +214,6 @@
 
 
 </script>
-<script>
-    window.addEventListener('message',
-        function (e) {
-            var task = e.data['task'];
-            if(task=='start')
-                modalLoading.init(true);
-            if(task=='stop')
-                modalLoading.init(false);
-        },
-        false);
-</script>
-
 
 </body>
 </html>
