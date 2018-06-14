@@ -1,6 +1,7 @@
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import *
 from bokeh.layouts import gridplot
+from bokeh.events import LODEnd, LODStart
 import math
 
 num_elements = 0
@@ -75,6 +76,9 @@ def compute_figures(tree, filename):
     parent.postMessage( {'task': 'stop'}, '*');
     '''
 
+    startLoad = "parent.postMessage( {'task': 'start'}, '*');"
+    endLoad = "parent.postMessage( {'task': 'stop'}, '*');"
+
     # dimensions and tools of each fig
     fig_list = [
         figure(
@@ -120,6 +124,11 @@ def compute_figures(tree, filename):
 
     fig_list[1].xgrid.visible = False
     fig_list[1].ygrid.visible = False
+
+    fig_list[0].js_on_event(LODStart, CustomJS(code=startLoad))
+    fig_list[0].js_on_event(LODEnd, CustomJS(code=endLoad))
+    fig_list[1].js_on_event(LODStart, CustomJS(code=startLoad))
+    fig_list[1].js_on_event(LODEnd, CustomJS(code=endLoad))
 
     return fig_list
 
