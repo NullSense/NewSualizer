@@ -1,4 +1,4 @@
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure, output_file, show, curdoc
 from bokeh.models import *
 from bokeh.layouts import gridplot
 from bokeh.events import LODEnd, LODStart
@@ -10,9 +10,19 @@ num_elements = 0
 def main(tree, filename):
     fig_list = compute_figures(tree, filename)
 
-    pre = Div(text='<div style="font-size: 15px ;">Dataset: <i>'+filename+'</i><br>Number of elements: <i>' + str(num_elements)+"</i></div>")
+    pre = Div(text='<div style="font-size: 15px ;">Dataset: <i>' + filename +
+              '</i><br>Number of elements: <i>' + str(num_elements) +
+              "</i></div>")
 
-    show(gridplot([[pre], fig_list], sizing_mode='scale_width', merge_tools=True))
+    # put everything into a gridplot
+    figure = gridplot(
+        [[pre], fig_list], sizing_mode='scale_width', merge_tools=True)
+
+    # TODO: use save() when deploying on server
+    show(figure)
+
+    # Add figure to current doc for bokeh server to display
+    curdoc().add_root(figure)
 
 
 def compute_figures(tree, filename):
@@ -26,7 +36,7 @@ def compute_figures(tree, filename):
     num_elements = 0  # number of elements in the whole tree
     low = []
     high = []
-    
+
     # Compute the layout of both visualisations
     compute_visualization1(tree, x1, y1, radius1, colors1, name, num_leaves,
                            0.0, 0.0, 50.0, 1, 0.0, low, high)
@@ -87,12 +97,11 @@ def compute_figures(tree, filename):
             x_range=(-100, 100),
             y_range=(-100, 100),
             tools=[
-                "box_select,lasso_select,reset,wheel_zoom,pan",
+                "box_select,lasso_select,reset,wheel_zoom,pan,save",
                 BoxZoomTool(match_aspect=True),
                 TapTool(
-                    callback=CustomJS(
-                        args=dict(source=source),
-                        code=collapse)),
+                    callback=CustomJS(args=dict(
+                        source=source), code=collapse)),
                 HoverTool(tooltips=[("Name: ",
                                      "@name"), ("Leaves in subtree: ",
                                                 "@num_leaves")]),
@@ -106,8 +115,7 @@ def compute_figures(tree, filename):
         fill_color='colors1',
         line_color='colors1',
         alpha='alpha1',
-        source=source
-        )
+        source=source)
 
     fig_list[1].circle(
         'x2',
@@ -140,9 +148,9 @@ def compute_filters(r1, r2):
     for j in range(len(radii)):
         opt_filters.extend([IndexFilter(indices=[]) for i in range(2)])
         for i in range(len(r1)):
-            if(r1[i] > radii[j]):
+            if (r1[i] > radii[j]):
                 opt_filters[j * 2].indices.append(i)
-            if(r2[i] > radii[j]):
+            if (r2[i] > radii[j]):
                 opt_filters[j * 2 + 1].indices.append(i)
     return opt_filters
 
@@ -163,9 +171,8 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
     name.append('unnamed' if node.name == '' else node.name)
     num_leaves.append(len(node))
 
-    colors1.append("#{:02x}{:02x}{:02x}".format(int(depth * 35),
-                                                int(depth * 35),
-                                                150))
+    colors1.append("#{:02x}{:02x}{:02x}".format(
+        int(depth * 35), int(depth * 35), 150))
 
     m = len(node.children)
     if (m == 0):
@@ -182,12 +189,9 @@ def compute_visualization1(node, x1, y1, radius1, colors1, name, num_leaves,
         radius = min(size * math.sin(t / (2 * m)), size / 2)
 
         compute_visualization1(node.children[i], x1, y1, radius1, colors1,
-                               name, num_leaves, xx +
-                               math.cos(angle) * size,
-                               yy +
-                               math.sin(
-            angle) * size, radius, depth + 1,
-            angle, low, high)
+                               name, num_leaves, xx + math.cos(angle) * size,
+                               yy + math.sin(angle) * size, radius, depth + 1,
+                               angle, low, high)
     high[index] = len(x1) - 1
 
 
