@@ -5,15 +5,16 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-<script src="modalLoading.js"></script>
-<script>
+<link rel="stylesheet" href="material-loading.css">
+<script src="material-loading.js"></script>
+<script type="text/javascript">
 window.addEventListener('message', 
     function (e) {
         var task = e.data['task'];
         if(task=='start')
-            modalLoading.init(true);
+            materialLoading(true);
         if(task=='stop')
-            modalLoading.init(false);
+            materialLoading(false);
     }, 
     false);
   </script>
@@ -167,7 +168,7 @@ window.addEventListener('message',
             }
             $link = $_SESSION['link'];
             if($link!=NULL)
-            {   $p = '</div><div style = "margin-left: 15%"><iframe style="position:absolute" src="HTML/'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
+            {   $p = '</div><script type="text/javascript">materialLoading(true);</script><div style = "margin-left: 15%"><iframe style="position:absolute" src="HTML/'.$link.'" width="100%" height="100%" frameBorder="0" onload="materialLoading(false);"></iframe></div>';
                 echo $p;
                 session_destroy();
             }
