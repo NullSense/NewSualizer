@@ -140,7 +140,7 @@
                         <img src="images/rolling.svg" alt="" />
                     </div>
                 </div>
-                <input type="submit" value="submit" id="submit_btn" style="margin-left:25%; margin-top:2%;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
+                <input type="submit" value="submit" id="submit_btn" style="margin-left:25%; margin-top:2%; margin-right:10%" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
             </form>
 
             <?php
@@ -155,7 +155,7 @@
             }
             $link = $_SESSION['link'];
             if($link!=NULL)
-            {   $p = '</div><div style = "margin-left: 15%"><iframe style="position:absolute" src="HTML/'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
+            {   $p = '</div><div style = "margin-left: 15%; margin-right:15%"><iframe style="position:absolute" src="HTML/'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
                 echo $p;
                 session_destroy();
             }
