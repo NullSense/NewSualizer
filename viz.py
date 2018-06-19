@@ -7,8 +7,8 @@ import math
 num_elements = 0
 
 
-def main(tree, filename):
-    fig_list = compute_figures(tree, filename)
+def main(tree, filename, visualizations):
+    fig_list = compute_figures(tree, filename, visualizations)
 
     pre = Div(
         text='<div style="font-size: 15px ;">Dataset: <i>' + filename +
@@ -20,7 +20,7 @@ def main(tree, filename):
     save(grid)
 
 
-def compute_figures(tree, filename):
+def compute_figures(tree, filename, visualizations):
     # These store the layout of the first visualisation
     x1 = []
     y1 = []
@@ -134,20 +134,6 @@ def compute_figures(tree, filename):
     fig_list[1].js_on_event(LODEnd, CustomJS(code=endLoad))
 
     return fig_list
-
-
-# Filters for optimization
-def compute_filters(r1, r2):
-    radii = [1, 0.2, 0.04]
-    opt_filters = []
-    for j in range(len(radii)):
-        opt_filters.extend([IndexFilter(indices=[]) for i in range(2)])
-        for i in range(len(r1)):
-            if (r1[i] > radii[j]):
-                opt_filters[j * 2].indices.append(i)
-            if (r2[i] > radii[j]):
-                opt_filters[j * 2 + 1].indices.append(i)
-    return opt_filters
 
 
 # Computes the layout of the first visualisation

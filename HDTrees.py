@@ -35,17 +35,28 @@ def parse_file(file):
     return tree
 
 
+# Removes leading and trailing characters for filename
 def get_filename():
     filename = sys.argv[1].split('/', 1)[-1].split('.', 1)[0]
     return filename
 
 
+# Gets visualization types from sys args
+def get_visualizations(visualizations):
+    print("Visualization amount: ", len(visualizations))
+
+    return visualizations
+
+
 def main():
     print(sys.argv)  # Prints all arguments passed in cmd
+
     # to run: python HDTrees.py Trees/filename.tre
     tree_output = parse_file(sys.argv[1])  # 2nd arg (file with dir)
 
-    viz.main(tree_output, get_filename())
+    visualizations = get_visualizations(sys.argv[2:])
+
+    viz.main(tree_output, get_filename(), visualizations)
 
 
 main()
