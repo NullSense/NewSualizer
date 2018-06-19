@@ -154,13 +154,14 @@
 
                 return $pageURL;
             }
-            $link = $_SESSION['link'];
-            if($link!=NULL)
-            {   $p = '</div><div class="viz"><iframe src="HTML/'.$link.'" class="viz2"></iframe></div>';
-                echo $p;
-                session_destroy();
+            if(array_key_exists('link', $_SESSION)){
+                $link = $_SESSION['link'];
+                if($link!=NULL)
+                {   $p = '</div><div class="viz"><iframe src="HTML/'.$link.'" class="viz2"></iframe></div>';
+                    echo $p;
+                    session_destroy();
+                }
             }
-
 
 
 
