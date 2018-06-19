@@ -155,7 +155,7 @@
             }
             $link = $_SESSION['link'];
             if($link!=NULL)
-            {   $p = '</div><div style = "margin-left: 15%; margin-right:15%"><iframe style="position:absolute" src="HTML/'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
+            {   $p = '</div><div style = "max-width:75%;margin-left: 15%; margin-right:15%"><iframe style="position:absolute" src="HTML/'.$link.'" max-width="75%" height="100%" frameBorder="0"></iframe></div>';
                 echo $p;
                 session_destroy();
             }
