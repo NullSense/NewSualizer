@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Created by PhpStorm.
@@ -7,7 +6,7 @@
  * Time: 11:27
  */
 
-// <!-- CODE WRITTEN BY BAHRIN CATALIN GROUP E03-->
+
 session_start();
 
 

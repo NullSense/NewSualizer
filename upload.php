@@ -1,5 +1,3 @@
-
-
 <?php
 /**
  * Created by PhpStorm.
@@ -7,9 +5,6 @@
  * Date: 29.04.2018
  * Time: 23:09
  */
-
-
-//<!-- CODE WRITTEN BY BAHRIN CATALIN GROUP E03-->
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check if file was uploaded without errors
