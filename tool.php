@@ -88,7 +88,7 @@ session_start(); ?>
             </div>
 
 
-            <div style="margin-left: 25%; margin-top:2%;">
+                    <div style="margin-left: 25%; margin-top:2%;">
                 <h2 style="color:blue" class="mdl-card__title-text">Step 2: Select dataset</h2>
             </div>
             <form action="vis.php" method="post">
@@ -98,7 +98,7 @@ session_start(); ?>
                     <tr>
                         <th class="mdl-data-table__cell">Index</th>
                         <th class="mdl-data-table__cell--non-numeric">Dataset</th>
-                        <th class="mdl-data-table__cell--non-numeric">Size(KB)</th>
+                        <th class="mdl-data-table__cell--non-numeric">Size (KB)</th>
                         <th class="mdl-data-table__cell">Upload Date</th>
                         <th class="mdl-data-table__cell">Checked</th>
                     </tr>
