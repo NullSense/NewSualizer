@@ -5,6 +5,7 @@
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css">
+<link rel="stylesheet" href="css/viz.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 
@@ -156,7 +157,7 @@
             }
             $link = $_SESSION['link'];
             if($link!=NULL)
-            {   $p = '</div><div style = "margin-left: 15%; margin-right:15%"><iframe style="position:absolute" src="HTML/'.$link.'" width="100%" height="100%" frameBorder="0"></iframe></div>';
+            {   $p = '</div><div class="viz"><iframe src="HTML/'.$link.'" class="viz2"></iframe></div>';
                 echo $p;
                 session_destroy();
             }
