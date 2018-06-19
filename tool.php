@@ -1,4 +1,3 @@
-<!-- CODE WRITTEN BY BAHRIN CATALIN GROUP E03-->
 <!DOCTYPE html>
 <html lang="en">
 <?php session_start();?>
