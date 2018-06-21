@@ -6,7 +6,6 @@
  * Time: 11:27
  */
 
-
 session_start();
 
 
@@ -22,16 +21,4 @@ $_SESSION['link'] = $link;
 
 header('Location: tool.php');
 exit;
-/*
- *
- * $command = escapeshellcmd('python HDTrees.py Trees/ancestor.tre');
-$output = shell_exec($command);
-echo $output;
-
-
-*/
-
-
-
-
 ?>

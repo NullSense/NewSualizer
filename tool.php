@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php session_start();?>
+<?php
+session_start(); ?>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css">
@@ -66,9 +67,6 @@
             <div class="demo-card-wide mdl-card mdl-shadow--2dp">
                 <div class="mdl-card__title">
                 </div>
-                <div class="mdl-card__supporting-text">
-                    Dataset format required : .tre, .txt
-                </div>
                 <div class="mdl-card__actions mdl-card--border">
                     <button onclick=showDiv(); class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                         Upload
@@ -90,7 +88,7 @@
             </div>
 
 
-            <div style="margin-left: 25%; margin-top:2%;">
+                    <div style="margin-left: 25%; margin-top:2%;">
                 <h2 style="color:blue" class="mdl-card__title-text">Step 2: Select dataset</h2>
             </div>
             <form action="vis.php" method="post">
@@ -100,7 +98,7 @@
                     <tr>
                         <th class="mdl-data-table__cell">Index</th>
                         <th class="mdl-data-table__cell--non-numeric">Dataset</th>
-                        <th class="mdl-data-table__cell--non-numeric">Size(KB)</th>
+                        <th class="mdl-data-table__cell--non-numeric">Size (KB)</th>
                         <th class="mdl-data-table__cell">Upload Date</th>
                         <th class="mdl-data-table__cell">Checked</th>
                     </tr>
@@ -109,30 +107,32 @@
 
                     <?php
 
-                    $entries = scandir("HTML");
-                    $filelist = array();
-                    foreach ($entries as $entry) {
-                        $filelist[] = $entry;
-                    }
+$entries = scandir("HTML");
+$filelist = array();
 
-                    $count = 0;
-                    for ($i = 2; $i < count($filelist); $i++) {
-                        $count++;
-                        echo '<tr>';
-                        // $entry2 = trim($filelist[$i], ".html");
-                        $entry2 = $filelist[$i];
-                        echo '<td class="mdl-data-table__cell--">' . $count . '</td>';
-                        echo '<td class="mdl-data-table__cell--non-numeric">' . $entry2 . '</td>';
-                        $str = 'HTML/' . $filelist[$i];
-                        echo '<td class="mdl-data-table__cell">' . filesize($str) / 1000 . '</td>';
-                        echo '<td class="mdl-data-table__cell">' . date("F d Y H:i:s.", filemtime($str)) . '</td>';
-                        echo '<td><label><input class="single-checkbox" type="checkbox" name= "dataset[]" id="dataset"  value="'.$filelist[$i].'"> </label> </td>';
-                        echo '</tr>';
+foreach($entries as $entry) {
+    $filelist[] = $entry;
+}
 
-                    }
-                    ?>
+$count = 0;
 
+for ($i = 2; $i < count($filelist); $i++) {
+    $count++;
+    echo '<tr>';
 
+    // $entry2 = trim($filelist[$i], ".html");
+
+    $entry2 = $filelist[$i];
+    echo '<td class="mdl-data-table__cell--">' . $count . '</td>';
+    echo '<td class="mdl-data-table__cell--non-numeric">' . $entry2 . '</td>';
+    $str = 'HTML/' . $filelist[$i];
+    echo '<td class="mdl-data-table__cell">' . filesize($str) / 1000 . '</td>';
+    echo '<td class="mdl-data-table__cell">' . date("F d Y H:i:s", filemtime($str)) . '</td>';
+    echo '<td><label><input class="single-radiobox" type="radio" name= "dataset[]" id="dataset"  value="' . $filelist[$i] . '"> </label> </td>';
+    echo '</tr>';
+}
+
+?>
                     </tbody>
                 </table>
                 <div id="loading" style="display: none" >
@@ -141,31 +141,33 @@
                         <img src="images/rolling.svg" alt="" />
                     </div>
                 </div>
-                <input type="submit" value="submit" id="submit_btn" style="margin-left:25%; margin-top:2%; margin-right:10%" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
+                <input type="submit" value="visualize" id="submit_btn" style="margin-left:25%; margin-top:2%; margin-right:10%" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" SHOW>
             </form>
 
             <?php
 
-            function curPageURL() {
-                $pageURL = 'http';
-                if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-                $pageURL .= "://";
-                $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+function curPageURL()
+{
+    $pageURL = 'http';
+    if ($_SERVER["HTTPS"] == "on") {
+        $pageURL.= "s";
+    }
 
-                return $pageURL;
-            }
-            if(array_key_exists('link', $_SESSION)){
-                $link = $_SESSION['link'];
-                if($link!=NULL)
-                {   $p = '</div><div class="viz"><iframe src="HTML/'.$link.'" class="viz2"></iframe></div>';
-                    echo $p;
-                    session_destroy();
-                }
-            }
+    $pageURL.= "://";
+    $pageURL.= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+    return $pageURL;
+}
 
+if (array_key_exists('link', $_SESSION)) {
+    $link = $_SESSION['link'];
+    if ($link != NULL) {
+        $p = '</div><div class="viz"><iframe src="HTML/' . $link . '" class="viz2"></iframe></div>';
+        echo $p;
+        session_destroy();
+    }
+}
 
-
-            ?>
+?>
 
 
 

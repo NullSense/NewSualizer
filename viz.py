@@ -7,8 +7,8 @@ import math
 num_elements = 0
 
 
-def main(tree, filename):
-    fig_list = compute_figures(tree, filename)
+def main(tree, filename, visualizations):
+    fig_list = compute_figures(tree, filename, visualizations)
 
     pre = Div(
         text='<div style="font-size: 15px ;">Dataset: <i>' + filename +
@@ -20,7 +20,7 @@ def main(tree, filename):
     save(grid)
 
 
-def compute_figures(tree, filename):
+def compute_figures(tree, filename, visualizations):
     # These store the layout of the first visualisation
     x1 = []
     y1 = []
