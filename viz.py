@@ -42,6 +42,13 @@ def compute_figures(tree, filename):
     radius2 = []  # size of circles
     compute_visualization2(tree, x2, y2, radius2, 0.0, 0.0, 80.0, 1)
 
+    # These store the layout of the third visualisation
+    x3 = []
+    y3 = []
+    w = []
+    h = []
+    compute_visualization3(tree, x3, y3, w, h, 0.0, 0.0, 200.0, 200.0, True)
+
     # output to static HTML file
     output_file("HTML/" + filename + ".html")
 
@@ -52,6 +59,7 @@ def compute_figures(tree, filename):
             radius1=radius1,
             x2=x2,
             y2=y2,
+            x3=x3, w=w, y3=y3, h=h,
             radius2=radius2,
             colors1=colors1,
             collapsed=[False] * len(x1),
@@ -100,7 +108,7 @@ def compute_figures(tree, filename):
                 HoverTool(tooltips=[("Name: ",
                                      "@name"), ("Leaves in subtree: ",
                                                 "@num_leaves")]),
-            ]) for i in range(2)
+            ]) for i in range(3)
     ]
     # add circles to visualizations
     fig_list[0].circle(
@@ -121,6 +129,16 @@ def compute_figures(tree, filename):
         alpha='alpha2',
         source=source)
 
+    fig_list[2].rect(
+        'x3',
+        'y3',
+        'w',
+        'h',
+        fill_alpha=0,
+        line_color='black',
+        alpha='alpha2',
+        source=source)
+
     # Remove grid lines
     fig_list[0].xgrid.visible = False
     fig_list[0].ygrid.visible = False
@@ -128,26 +146,17 @@ def compute_figures(tree, filename):
     fig_list[1].xgrid.visible = False
     fig_list[1].ygrid.visible = False
 
+    fig_list[2].xgrid.visible = False
+    fig_list[2].ygrid.visible = False
+
     fig_list[0].js_on_event(LODStart, CustomJS(code=startLoad))
     fig_list[0].js_on_event(LODEnd, CustomJS(code=endLoad))
     fig_list[1].js_on_event(LODStart, CustomJS(code=startLoad))
     fig_list[1].js_on_event(LODEnd, CustomJS(code=endLoad))
+    fig_list[2].js_on_event(LODStart, CustomJS(code=startLoad))
+    fig_list[2].js_on_event(LODEnd, CustomJS(code=endLoad))
 
     return fig_list
-
-
-# Filters for optimization
-def compute_filters(r1, r2):
-    radii = [1, 0.2, 0.04]
-    opt_filters = []
-    for j in range(len(radii)):
-        opt_filters.extend([IndexFilter(indices=[]) for i in range(2)])
-        for i in range(len(r1)):
-            if (r1[i] > radii[j]):
-                opt_filters[j * 2].indices.append(i)
-            if (r2[i] > radii[j]):
-                opt_filters[j * 2 + 1].indices.append(i)
-    return opt_filters
 
 
 # Computes the layout of the first visualisation
@@ -207,3 +216,27 @@ def compute_visualization2(node, x2, y2, radius2, xx, yy, size, depth):
                                xx + math.cos(angle) * (size - radius),
                                yy + math.sin(angle) * (size - radius), radius,
                                depth + 1)
+
+
+# Computes the layout of second visualisation
+def compute_visualization3(node, x3, y3, w, h, xx, yy, ww, hh, horizontal):
+    x3.append(xx)
+    y3.append(yy)
+    w.append(ww)
+    h.append(hh)
+
+    m = len(node.children)
+    if (m == 0):
+        return
+
+    for i in range(m):
+        if horizontal:
+            compute_visualization3(node.children[i], x3, y3, w, h,
+                                   xx - ww / 2 + i * ww / m, yy,
+                                   ww / m, hh,
+                                   not horizontal)
+        else:
+            compute_visualization3(node.children[i], x3, y3, w, h,
+                                   xx, yy - hh / 2 + i * hh / m,
+                                   ww, hh / m,
+                                   not horizontal)
