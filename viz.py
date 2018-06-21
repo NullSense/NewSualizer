@@ -232,11 +232,11 @@ def compute_visualization3(node, x3, y3, w, h, xx, yy, ww, hh, horizontal):
     for i in range(m):
         if horizontal:
             compute_visualization3(node.children[i], x3, y3, w, h,
-                                   xx - ww / 2 + i * ww / m, yy,
+                                   xx - ww / 2 + i * ww / m + ww / (2*m), yy,
                                    ww / m, hh,
-                                   not horizontal)
+                                   False)
         else:
             compute_visualization3(node.children[i], x3, y3, w, h,
-                                   xx, yy - hh / 2 + i * hh / m,
+                                   xx, yy - hh / 2 + i * hh / m + hh / (2*m),
                                    ww, hh / m,
-                                   not horizontal)
+                                   True)

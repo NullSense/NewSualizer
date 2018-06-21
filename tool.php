@@ -7,7 +7,8 @@ session_start(); ?>
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css">
 <link rel="stylesheet" href="css/viz.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-
+<link rel="stylesheet" href="material-loading.css">
+<script src="material-loading.js"></script>
 
 <head>
     <meta charset="UTF-8">
@@ -161,7 +162,14 @@ function curPageURL()
 if (array_key_exists('link', $_SESSION)) {
     $link = $_SESSION['link'];
     if ($link != NULL) {
-        $p = '</div><div class="viz"><iframe src="HTML/' . $link . '" class="viz2"></iframe></div>';
+        $p = '</div>
+        <script type="text/javascript">
+        materialLoading(true);
+        console.log(1);
+        </script>
+        <div class="viz">
+        <iframe src="HTML/' . $link . '" class="viz2" onload="materialLoading(false);"></iframe>
+        </div>';
         echo $p;
         session_destroy();
     }
@@ -206,18 +214,18 @@ if (array_key_exists('link', $_SESSION)) {
 
 
 </script>
-<script>
-    window.addEventListener('message',
-        function (e) {
-            var task = e.data['task'];
-            if(task=='start')
-                modalLoading.init(true);
-            if(task=='stop')
-                modalLoading.init(false);
-        },
-        false);
-</script>
-
+<script type="text/javascript">
+window.addEventListener('message', 
+    function (e) {
+        console.log(1);
+        var task = e.data['task'];
+        if(task=='start')
+            materialLoading(true);
+        if(task=='stop')
+            materialLoading(false);
+    }, 
+    false);
+  </script>
 
 </body>
 </html>
