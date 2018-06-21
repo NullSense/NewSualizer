@@ -96,11 +96,11 @@ session_start(); ?>
                        class="mdl-data-table mdl-js-data-table">
                     <thead>
                     <tr>
+                        <th class="mdl-data-table__cell">Checked</th>
                         <th class="mdl-data-table__cell">Index</th>
                         <th class="mdl-data-table__cell--non-numeric">Dataset</th>
                         <th class="mdl-data-table__cell--non-numeric">Size (KB)</th>
                         <th class="mdl-data-table__cell">Upload Date</th>
-                        <th class="mdl-data-table__cell">Checked</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -123,12 +123,13 @@ for ($i = 2; $i < count($filelist); $i++) {
     // $entry2 = trim($filelist[$i], ".html");
 
     $entry2 = $filelist[$i];
+    echo '<td><label><input class="single-radiobox" type="radio" name= "dataset[]" id="dataset"  value="' . $filelist[$i] . '"> </label> </td>';
     echo '<td class="mdl-data-table__cell--">' . $count . '</td>';
     echo '<td class="mdl-data-table__cell--non-numeric">' . $entry2 . '</td>';
     $str = 'HTML/' . $filelist[$i];
     echo '<td class="mdl-data-table__cell">' . filesize($str) / 1000 . '</td>';
     echo '<td class="mdl-data-table__cell">' . date("F d Y H:i:s", filemtime($str)) . '</td>';
-    echo '<td><label><input class="single-radiobox" type="radio" name= "dataset[]" id="dataset"  value="' . $filelist[$i] . '"> </label> </td>';
+
     echo '</tr>';
 }
 
