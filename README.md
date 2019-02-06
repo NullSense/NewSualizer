@@ -1,4 +1,4 @@
 # DBL-Tree-Visualization
 
-This project visualizes newick datasets.
+A newick dataset visualizer.
 ![In action](Screenshots/action.gif)
